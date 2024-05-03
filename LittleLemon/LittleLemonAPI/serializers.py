@@ -13,8 +13,27 @@ class MenuItemSerializer(serializers.ModelSerializer):
         model = MenuItem
         fields = ['id', 'title', 'price' 'category', 'featured']
 
-class UserSeqializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     Date_Joined = serializers.SerializerMethodField()
     date_joined = serializers.DateTimeField(write_only=True, default=datetime.now)
     email = serializers.EmailField(required=False)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'date_joined', 'Date_Joined']
+
+    def get_Date_Joined(self, obj):
+        return obj.date_joined.strftime('%m-%d-%Y')
+    
+class UserCartSerializer(serializers.ModelSerializer):
+    unit_price = serializers.DecimalField(max_digits=6, decimal_places=2, source='menuitem.price', read_only=True)
+    price = serializers.DecimalField(max_digits=6, decimal_places=2, read_only=True)
+    name = serializers.CharField(source='menuitem.title', read_only=True)
+
+    class Meta:
+        model = OrderItem
+        fields = ['name', 'quantity', 'unit_price', 'price']
+        extra_kwargs = {
+            'menuitem': {'read_only': True}
+        }
 
