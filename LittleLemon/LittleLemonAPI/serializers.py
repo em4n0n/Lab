@@ -25,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
     def get_Date_Joined(self, obj):
         return obj.date_joined.strftime('%m-%d-%Y')
     
-class UserCartSerializer(serializers.ModelSerializer):
+class OrderItemSerializer(serializers.ModelSerializer):
     unit_price = serializers.DecimalField(max_digits=6, decimal_places=2, source='menuitem.price', read_only=True)
     price = serializers.DecimalField(max_digits=6, decimal_places=2, read_only=True)
     name = serializers.CharField(source='menuitem.title', read_only=True)
@@ -37,3 +37,19 @@ class UserCartSerializer(serializers.ModelSerializer):
             'menuitem': {'read_only': True}
         }
 
+class UserOrdersSerializer(serializers.ModelSerializer):
+    Date = serializers.SerializerMethodField()
+    date = serializers.DateTimeField(write_only=True, default=datetime.now)
+    order_items = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Order
+        fields = ['id', 'user', 'delivery_crew', 'status', 'date', 'order_items']
+        extra_kwargs = {
+            'total': {'read_only': True}
+        }
+
+    def get_date(self, obj):
+        order_items = OrderItem.objects.filter(order=obj)
+        serializer = OrderItemSerializer(order_items, many=True, context={'request': self.context['request']})
+        return serializer.data
