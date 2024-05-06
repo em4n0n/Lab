@@ -53,3 +53,8 @@ class UserOrdersSerializer(serializers.ModelSerializer):
         order_items = OrderItem.objects.filter(order=obj)
         serializer = OrderItemSerializer(order_items, many=True, context={'request': self.context['request']})
         return serializer.data
+    
+    def get_order_items(self, obj):
+        order_items = OrderItem.objects.filter(order=obj)
+        serializer = OrderItemSerializer(order_items, many=True, context={'request': self.context['request']})
+        return serializer.data
