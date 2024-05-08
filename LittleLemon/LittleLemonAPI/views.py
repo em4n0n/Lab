@@ -18,6 +18,8 @@ class MenuItemView(generics.ListAPIView, generics.ListCreateAPIView):
             return [IsAdminUser()]
         return [AllowAny()]
     
-class SingleItemView(generics.RetrieveUpdateDestroyAPIView, generics.REtrieveAPIView):
+class SingleItemView(generics.RetrieveUpdateDestroyAPIView, generics.RetrieveAPIView):
     queryset = MenuItem.object.all()
     serializer_class = MenuItemSerializer
+    throttle_classes = [AnonRateThrottle, UserRateThrottle]
+    
