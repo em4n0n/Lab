@@ -17,3 +17,6 @@ class MenuItemView(generics.ListAPIView, generics.ListCreateAPIView):
         if self.request.method == 'POST':
             return [IsAdminUser()]
         return [AllowAny()]
+    
+class SingleItemView(generics.RetrieveUpdateDestroyAPIView, generics.REtrieveAPIView):
+    
