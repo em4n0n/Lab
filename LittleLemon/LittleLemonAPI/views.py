@@ -19,4 +19,5 @@ class MenuItemView(generics.ListAPIView, generics.ListCreateAPIView):
         return [AllowAny()]
     
 class SingleItemView(generics.RetrieveUpdateDestroyAPIView, generics.REtrieveAPIView):
-    
+    queryset = MenuItem.object.all()
+    serializer_class = MenuItemSerializer
