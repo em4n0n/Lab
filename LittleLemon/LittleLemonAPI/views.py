@@ -32,6 +32,9 @@ class ManagerUsersView(generics.ListCreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
 
-    
+    def get_queryset(self):
+        manager_group = Group.objects.get(name='manager')
+        queryset = User.objects.filter(group=manager_group)
+        return queryset
     
 
