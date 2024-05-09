@@ -37,4 +37,9 @@ class ManagerUsersView(generics.ListCreateAPIView):
         queryset = User.objects.filter(group=manager_group)
         return queryset
     
+    def perform_create(self, serializer):
+        manager_group = Group.objects.get(name='manager')
+        user = serializer.save()
+        user.groups.add(manager_group)
+    
 
