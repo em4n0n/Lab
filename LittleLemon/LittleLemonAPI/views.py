@@ -22,4 +22,10 @@ class SingleItemView(generics.RetrieveUpdateDestroyAPIView, generics.RetrieveAPI
     queryset = MenuItem.object.all()
     serializer_class = MenuItemSerializer
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
+    def get_permissions(self):
+        if self.request.method == 'POST' or self.request.method == 'PUT' \
+                or self.request.method == 'DELETE' or self.request.method == 'PATCH':
+            return [IsAdminUser]
+        return [AllowAny()]
     
+
