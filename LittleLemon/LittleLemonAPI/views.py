@@ -28,4 +28,10 @@ class SingleItemView(generics.RetrieveUpdateDestroyAPIView, generics.RetrieveAPI
             return [IsAdminUser]
         return [AllowAny()]
     
+class ManagerUsersView(generics.ListCreateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
+
+    
+    
 
