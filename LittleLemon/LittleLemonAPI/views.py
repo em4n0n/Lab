@@ -41,5 +41,9 @@ class ManagerUsersView(generics.ListCreateAPIView):
         manager_group = Group.objects.get(name='manager')
         user = serializer.save()
         user.groups.add(manager_group)
+
+class ManagerSingleUserView(generics.RetrieveDestroyAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
     
 
