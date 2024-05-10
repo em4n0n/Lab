@@ -46,4 +46,8 @@ class ManagerSingleUserView(generics.RetrieveDestroyAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
     
+    def get_queryset(self):
+        manager_group = Group.objects.get(name='manager')
+        queryset = User.object.filter(groups=manager_group)
+        return queryset
 
