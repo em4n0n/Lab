@@ -118,3 +118,12 @@ class Orders_View(generics.ListCreateAPIView):
         for item in cart_items:
             total += item.price
         return total
+    
+class Single_Order_View(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = UserOrdersSerializer
+    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        user = self.request.user
+        if user.groups.filter(name='manager').exists():
+            return Order.object.all()
+        return Order.objects.filter(user=user)
