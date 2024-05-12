@@ -63,3 +63,12 @@ class Delivery_Crew_Management(generics.ListCreateAPIView):
         delivery_group = Group.objects.get(name='delivery crew')
         user = serializer.save()
         user.group.add(delivery_group)
+
+class Delivery_Crew_Management_Single_View(generics.RetrieveDestroyAPIView):
+    serializer_class = UserSerializer
+    permission_class = [IsAdminUser]
+
+    def get_queryset(self):
+        delivery_group = Group.objects.get(name='delivery crew')
+        queryset = User.objects.filter(groups=delivery_group)
+        return queryset
