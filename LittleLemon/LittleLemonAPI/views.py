@@ -72,3 +72,25 @@ class Delivery_Crew_Management_Single_View(generics.RetrieveDestroyAPIView):
         delivery_group = Group.objects.get(name='delivery crew')
         queryset = User.objects.filter(groups=delivery_group)
         return queryset
+
+class Customer_Cart(generics.ListCreateAPIView):
+    serializer_class = UserCartSerializer
+    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        user = self.request.user
+        return Cart.object.filter(user=user)
+    
+    def perform_Create(self, serializer):
+        menuitem = self.request.data.get('menuitem')
+        quantity = self.request.data.get('quantity')
+        unit_price = MenuItem.objects.get(pk=menuitem).price
+        quantity = int(quantity)
+        price = quantity * unit_price
+        serializer.save(user=self.request.user, price=price)
+    
+    def delete(self, request):
+        user = self.request.user
+        Cart.objects.filter(user=user).delete()
+        return Response(status=204)
+    
+    
