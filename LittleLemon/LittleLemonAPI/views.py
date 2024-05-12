@@ -93,4 +93,28 @@ class Customer_Cart(generics.ListCreateAPIView):
         Cart.objects.filter(user=user).delete()
         return Response(status=204)
     
+class Orders_View(generics.ListCreateAPIView):
+    serializer_class = UserOrdersSerializer
+    permission_classes = [IsAuthenticated]
+    throttle_classes = [AnonRateThrottle, UserRateThrottle]
+    def perform_create(self, serializer):
+        cart_items = Cart.objects.filter(user=self.request.user)
+        total = self.calculate_total(cart_items)
+        order = serializer.save(user=self.request.user, total=total)
+
+        for cart_item in cart_items:
+            OrderItem.objects.create(menuitem=cart_item.menuitem, quantity=cart_item.quantity, 
+                                     unit_price=cart_item.unit_price, price=cart_item.price, order=order)
+            cart_item.delete()
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.groups.filter(name='manager').exists():
+            return Order.objects.all()
+        return Order.objects.filter(user=user)
     
+    def calculate_total(self, cart_items):
+        total = Decimal(0)
+        for item in cart_items:
+            total += item.price
+        return total
