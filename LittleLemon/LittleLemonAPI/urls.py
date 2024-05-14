@@ -6,6 +6,10 @@ url_patterns = [
     path('menu-items/<int:pk>/', views.SingleItemView.as_view()),
     path('groups/manager/users/', views.ManagerUsersView.as_view()),
     path('groups/manager/users/<int:pk', views.ManagerSingleUserView.as_view()),
+    path('groups/delivery-crew/users', views.Delivery_Crew_Management.as_view()),
+    path('groups/delivery-crew/users/<int:pk>/', views.Delivery_Crew_Management_Single_View.as_view()),
+    
+
 
 
 ]
